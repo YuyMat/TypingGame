@@ -32,7 +32,6 @@ class TypingGame(object):
 
     def init_screen(self):
         self.screen.fill(self.background_color)
-        pygame.display.update()
 
     def menu_button(self, mode, rect_x, rect_y, mode_x, mode_y, width, height, color):
         font = pygame.font.SysFont(None, 30, italic=True)
@@ -64,35 +63,47 @@ class TypingGame(object):
 
     def play_screen(self):
         self.init_screen()
+        if self.i == 0:
+            # decide typing word    
+            self.word, self.romaji = random.choice(list(self.words_dict.items()))
+            
+        # settings
         word_font = pygame.font.SysFont("ヒラキノ角コシックw7", 80)
         romaji_font = pygame.font.SysFont(None, 40)
-
-        self.word, self.romaji = random.choice(list(self.words_dict.items()))
+        
         word = word_font.render(self.word, True, "black")
         romaji = romaji_font.render(self.romaji, True, "black")
-        self.romaji = self.romaji.replace(" ", "")
         word_width_mid = (self.width/2) - (word.get_width()/2)
         romaji_width_mid = (self.width/2) - (romaji.get_width()/2)
+
+        # display
         self.screen.blit(word, (word_width_mid, 50))
         self.screen.blit(romaji, (romaji_width_mid, 150))
         pygame.display.update()
 
     def game_run(self, event):
-        # font = pygame.font.SysFont(None, 80)
-        if self.keyboard_dict[event] == self.romaji[self.i]:
+        font = pygame.font.SysFont(None, 80)
+        romaji = self.romaji.replace(" ", "")
+        # right typing
+        if self.keyboard_dict[event] == romaji[self.i]:
+            
+            # make sound
             self.typing_sound.play()
-            self.letter += self.romaji[self.i]
-            # letter = font.render(self.letter, True, "black")
-            # self.screen.blit(letter, ((self.width/2) - (letter.get_width()/2), 400))
-            pygame.display.update()
+            
+            self.letter += romaji[self.i]
+            
+            # display typed letter
+            letter = font.render(self.letter, True, "black")
             self.i += 1
-            if self.letter == self.romaji:
+            self.play_screen()
+            self.screen.blit(letter, ((self.width/2) - (letter.get_width()/2), 400))
+            pygame.display.update()
+
+            # when complited
+            if self.letter == romaji:
                 self.i = 0
                 self.letter = ""
                 self.play_screen()
-
-    # def input_key(self):
-    #     for event in pygame.event.get():
 
     def result_screen(self):
         pass
