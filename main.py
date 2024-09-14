@@ -25,6 +25,7 @@ class TypingGame(object):
         alphabet_list = [chr(i) for i in range(ord('a'), ord('z') + 1)]
         self.keyboard_dict = {n: alphabet for n, alphabet in zip(_, alphabet_list)}
         self.typing_sound = pygame.mixer.Sound("/Users/yuya/Desktop/MyWork/TypingGame/sounds/タイピング-メカニカル単2.mp3")
+        self.correct_sound = pygame.mixer.Sound("/Users/yuya/Desktop/MyWork/TypingGame/sounds/決定音.mp3")
 
     def make_screen(self):
         self.screen = pygame.display.set_mode((self.width, self.height))
@@ -81,6 +82,12 @@ class TypingGame(object):
         self.screen.blit(romaji, (romaji_width_mid, 150))
         pygame.display.update()
 
+    def progress_bar(self, word):
+        progress = (len(self.letter) / len(word)) * self.width
+        rect = pygame.Rect(0, 210, progress, 10)
+
+        pygame.draw.rect(self.screen, (255, 0, 0), rect)
+
     def game_run(self, event):
         font = pygame.font.SysFont(None, 80)
         romaji = self.romaji.replace(" ", "")
@@ -97,10 +104,13 @@ class TypingGame(object):
             self.i += 1
             self.play_screen()
             self.screen.blit(letter, ((self.width/2) - (letter.get_width()/2), 400))
+            self.progress_bar(romaji)
             pygame.display.update()
 
             # when complited
             if self.letter == romaji:
+                self.correct_sound.set_volume(0.2)
+                self.correct_sound.play()
                 self.i = 0
                 self.letter = ""
                 self.play_screen()
