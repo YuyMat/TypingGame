@@ -1,8 +1,6 @@
 import json
 import pygame
 import random
-# from tkinter import font
-
 
 class TypingGame(object):
     def __init__(self):
@@ -16,16 +14,19 @@ class TypingGame(object):
         self.rect_dict = {}
         self.difficulty = None
         self.words_json = {
-            "easy" : "/Users/yuya/Desktop/MyWork/TypingGame/words/easy_words.json",
-            "normal" : "/Users/yuya/Desktop/MyWork/TypingGame/words/normal_words.json",
-            "hard" : "/Users/yuya/Desktop/MyWork/TypingGame/words/hard_words.json"
+            "easy" : "words/easy_words.json",
+            "normal" : "words/normal_words.json",
+            "hard" : "words/hard_words.json"
             }
         self.words_dict = None
+
+        # A dictionary that maps keyboard keys to alphabets
         _ = [x for x in range(97, 123)]
         alphabet_list = [chr(i) for i in range(ord('a'), ord('z') + 1)]
         self.keyboard_dict = {n: alphabet for n, alphabet in zip(_, alphabet_list)}
-        self.typing_sound = pygame.mixer.Sound("/Users/yuya/Desktop/MyWork/TypingGame/sounds/タイピング-メカニカル単2.mp3")
-        self.correct_sound = pygame.mixer.Sound("/Users/yuya/Desktop/MyWork/TypingGame/sounds/決定音.mp3")
+        
+        self.typing_sound = pygame.mixer.Sound("sounds/タイピング-メカニカル単2.mp3")
+        self.correct_sound = pygame.mixer.Sound("sounds/決定音.mp3")
 
     def make_screen(self):
         self.screen = pygame.display.set_mode((self.width, self.height))
@@ -35,21 +36,26 @@ class TypingGame(object):
         self.screen.fill(self.background_color)
 
     def menu_button(self, mode, rect_x, rect_y, mode_x, mode_y, width, height, color):
+        # settings
         font = pygame.font.SysFont(None, 30, italic=True)
         display_mode = font.render(mode, True, "white")
         rect = pygame.Rect(rect_x, rect_y, width, height)
+        
+        # store the rect in self.rect_dict for using a button
         self.rect_dict[mode] = rect
 
+        # display
         pygame.draw.rect(self.screen, color, rect)
         self.screen.blit(display_mode, (mode_x, mode_y))
 
     def menu_screen(self):
+        # settings
         font = pygame.font.SysFont(None, 80)
-
         title = font.render("Typing Game by PyGame!", True, "black")
-        image = pygame.image.load("/Users/yuya/Desktop/MyWork/TypingGame/keyboard.png")
+        image = pygame.image.load("keyboard.png")
         image = pygame.transform.scale(image, (500, 300))
         
+        # display
         self.menu_button("easy", 700, 400, 725, 410, 100, 40, (59, 175, 117))
         self.menu_button("normal", 700, 450, 713, 460, 100, 40, (0, 106, 182))
         self.menu_button("hard", 700, 500, 725, 510, 100, 40, (215, 29, 59))
@@ -115,16 +121,11 @@ class TypingGame(object):
                 self.letter = ""
                 self.play_screen()
 
-    def result_screen(self):
-        pass
-    
     def display_screen(self):
         if self.screen_mode == "menu":
             self.menu_screen()
         if self.screen_mode == "play":
             self.play_screen()
-        if self.screen_mode == "result":
-            self.result_screen()
 
     def run(self):
         self.i = 0
