@@ -1,7 +1,7 @@
 import json
 import pygame
 import random
-from tkinter import font
+# from tkinter import font
 
 
 class TypingGame(object):
